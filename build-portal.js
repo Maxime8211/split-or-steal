@@ -69,7 +69,7 @@ function makeZip(entries) {
 
 const entries = walk(SRC).map((rel) => {
   let data = fs.readFileSync(path.join(SRC, rel));
-  if (rel === 'config.js') data = Buffer.from(`window.GAME_CONFIG = { server: ${JSON.stringify(server)} };\n`);
+  if (rel === 'config.js') data = Buffer.from(`window.GAME_CONFIG = { server: ${JSON.stringify(server)}, ads: ${process.argv.includes('--ads')} };\n`);
   return { name: rel, data };
 });
 
