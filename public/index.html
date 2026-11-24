@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split or Steal: Millions</title>
+<meta name="description" content="Split or steal a pot of up to $5,000,000. Bluff, trust or betray, then spend your millions on cars, yachts and villas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#13141c; --panel:#1d1f2b; --panel2:#262938; --line:#33374a;
+  --ink:#f2f3f7; --mut:#9da3b8; --gold:#ffc83d; --money:#5be38f;
+  --split:#2fd17a; --steal:#ff5252;
+  --petit:#9aa0a6; --gros:#3b9cff; --enorme:#b46bff; --jackpot:#ff9f1a; --mega:#ffd60a;
+  --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 "Nunito",system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.3px;margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:920px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:#16171f;position:sticky;top:0;z-index:5}
+.logo{font-family:var(--display);font-size:22px;margin-right:auto;white-space:nowrap}
+.logo b{color:var(--split);font-weight:400}.logo i{color:var(--steal);font-style:normal}
+.pill{background:var(--panel2);border-radius:999px;padding:6px 12px;font-weight:800;white-space:nowrap}
+.money{color:var(--money)}
+@media(max-width:480px){#online{display:none}.logo{font-size:19px}}
+.screen[hidden]{display:none!important}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.btn{border:0;border-radius:14px;padding:14px 20px;font-weight:800;color:#111;background:var(--gold);min-height:48px}
+.btn.ghost{background:var(--panel2);color:var(--ink)}
+.btn.big{font-size:20px;padding:18px 24px;width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input.text{width:100%;height:50px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:0 14px;font:inherit;font-size:17px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:700px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.mut{color:var(--mut)}.small{font-size:14px}
+.hero{text-align:center;padding:24px 0 8px}
+.hero h1{font-size:clamp(34px,7vw,56px);line-height:1}
+.hero p{color:var(--mut);margin:10px auto 0;max-width:48ch}
+.title-tag{display:inline-block;font-size:12px;font-weight:800;color:var(--gold);background:#2d2a1c;border-radius:6px;padding:2px 7px}
+.rules{margin:0;padding-left:18px}.rules li{margin:4px 0}
+/* odds */
+.odds{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}
+.odds div{background:var(--panel2);border-radius:10px;padding:8px 4px;text-align:center;font-size:12px;font-weight:800;border-bottom:3px solid var(--line)}
+.odds b{display:block;font-size:15px}
+/* patrimoine */
+.assets{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}
+.asset{background:var(--panel2);border-radius:14px;padding:12px;text-align:center;border:2px solid var(--line)}
+.asset .emo{font-size:38px;line-height:1.1}
+.asset .nm{font-weight:800;font-size:14px;margin-top:4px}
+.asset .pr{font-size:13px;color:var(--money);font-weight:800}
+.asset button{margin-top:8px;width:100%;border:0;border-radius:10px;padding:8px;background:#30344a;color:var(--ink);font-weight:800;font-size:13px;min-height:38px}
+/* match */
+.opp{display:flex;align-items:center;gap:12px}
+.avatar{width:50px;height:50px;border-radius:50%;background:var(--panel2);display:grid;place-items:center;font-size:26px;flex:none}
+.tag{font-size:12px;font-weight:800;background:#30344a;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.rate{margin-left:auto;text-align:right;flex:none}
+.rate b{font-size:22px;display:block}
+.oppline{font-size:13px;color:var(--mut);margin-top:2px}
+.pot{margin:18px auto;max-width:420px;border-radius:20px;padding:22px 16px;text-align:center;background:var(--panel2);border:3px solid var(--petit)}
+.pot .tier{font-family:var(--display);font-size:22px;letter-spacing:.5px}
+.pot .amount{font-family:var(--display);font-size:clamp(40px,10vw,64px);line-height:1.05;color:var(--money);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pot .hint{font-size:13px;color:var(--mut);margin-top:4px}
+.t-petit{border-color:var(--petit)}.t-petit .tier{color:var(--petit)}
+.t-gros{border-color:var(--gros)}.t-gros .tier{color:var(--gros)}
+.t-enorme{border-color:var(--enorme);box-shadow:0 0 30px rgba(180,107,255,.35)}.t-enorme .tier{color:var(--enorme)}
+.t-jackpot{border-color:var(--jackpot);box-shadow:0 0 40px rgba(255,159,26,.45)}.t-jackpot .tier{color:var(--jackpot)}
+.t-mega{border-color:var(--mega);background:linear-gradient(180deg,#3a3010,#262938);animation:mega 1.1s ease-in-out infinite}
+.t-mega .tier{color:var(--mega)}.t-mega .amount{color:var(--mega)}
+@keyframes mega{0%,100%{box-shadow:0 0 30px rgba(255,214,10,.45)}50%{box-shadow:0 0 70px rgba(255,214,10,.9)}}
+.timer{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.timer i{display:block;height:100%;background:var(--gold);width:100%;transition:width .25s linear}
+.timer i.low{background:var(--steal)}
+.chat{height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:10px;background:#171923;border-radius:12px;margin-top:12px}
+.bub{max-width:80%;padding:8px 12px;border-radius:14px;background:var(--panel2);font-weight:700;font-size:15px;align-self:flex-start}
+.bub.me{align-self:flex-end;background:#2b3d63}
+.phrases{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px}
+.phrases button{flex:none;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:10px 14px;font-weight:700;font-size:14px;white-space:nowrap;min-height:44px}
+.phrases button:disabled{opacity:.4}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.choice{border:3px solid transparent;border-radius:16px;padding:18px 10px;font-family:var(--display);font-size:26px;color:#0f1a12;min-height:76px}
+.choice.split{background:var(--split)}
+.choice.steal{background:var(--steal);color:#2a0c0c}
+.choice.sel{border-color:#fff;transform:scale(1.03)}
+.choice:not(.sel).dim{opacity:.45}
+.status{min-height:24px;text-align:center;margin-top:10px;font-weight:800}
+/* result */
+.reveal{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.rcard{border-radius:16px;padding:16px;text-align:center;background:var(--panel2)}
+.rcard .who{font-weight:800;color:var(--mut);font-size:14px}
+.rcard .what{font-family:var(--display);font-size:28px;margin-top:4px}
+.rcard.split .what{color:var(--split)}.rcard.steal .what{color:var(--steal)}
+.outcome{text-align:center;font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.1}
+.gain{text-align:center;font-family:var(--display);font-size:clamp(28px,7vw,44px);color:var(--money);margin-top:8px;font-variant-numeric:tabular-nums}
+.gain.zero{color:var(--mut);font-size:22px}
+.btn.ad{background:linear-gradient(90deg,#ffd60a,#ff9f1a);width:100%;font-size:18px;margin-top:12px}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .45s ease-out both}
+@media(prefers-reduced-motion:reduce){.pop,.t-mega{animation:none}.choice.sel{transform:none}}
+.code{font-family:var(--display);font-size:56px;letter-spacing:6px;color:var(--gold);text-align:center}
+.spinner{width:48px;height:48px;border-radius:50%;border:5px solid var(--panel2);border-top-color:var(--gold);margin:20px auto;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation:none}}
+.lb{list-style:none;margin:10px 0 0;padding:0}
+.lb li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);align-items:center}
+.lb li span:last-child{margin-left:auto;color:var(--money);font-weight:800;white-space:nowrap}
+/* boutique */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:800;min-height:44px}
+.tabs button[aria-selected=true]{background:var(--gold);color:#111;border-color:var(--gold)}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:14px}
+.offer{background:var(--panel2);border:2px solid var(--line);border-radius:14px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:6px}
+.offer .big-emo{font-size:44px;line-height:1.1}
+.offer .lbl{font-weight:800}
+.offer .price{color:var(--money);font-weight:800}
+.offer button{margin-top:auto;border:0;border-radius:10px;padding:10px;font-weight:800;min-height:42px;background:var(--gold);color:#111}
+.offer button.own{background:#30344a;color:var(--ink)}
+.offer button.eq{background:var(--split);color:#0f1a12}
+.offer button:disabled{opacity:.5;cursor:not-allowed}
+.offer.equipped{border-color:var(--split)}
+.swatch{width:42px;height:42px;border-radius:50%;margin:0 auto;border:3px solid #fff3}
+.bar{height:6px;background:#30344a;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--money)}
+/* pub simulée */
+.adlayer{position:fixed;inset:0;background:rgba(0,0,0,.88);display:grid;place-items:center;z-index:20}
+.adlayer[hidden]{display:none}
+.adbox{background:var(--panel);border-radius:18px;padding:28px;text-align:center;max-width:360px;width:90%}
+.adbox .count{font-family:var(--display);font-size:64px;color:var(--gold)}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#000;color:#fff;padding:12px 16px;border-radius:12px;font-weight:800;display:none;z-index:30;max-width:92vw;text-align:center}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><b>Split</b> or <i>Steal</i></div>
+  <span class="pill small" id="online">● 0 online</span>
+  <span class="pill money" id="coins">$0</span>
+</header>
+
+<main class="wrap">
+
+  <!-- Connexion -->
+  <section class="screen" id="screen-connect">
+    <div class="card" style="max-width:440px;margin:60px auto;text-align:center">
+      <h2>Connecting…</h2>
+      <div class="spinner"></div>
+      <p class="mut small" id="connectText">Waking up the game server. The first connection can take up to a minute.</p>
+    </div>
+  </section>
+
+  <!-- Pseudo -->
+  <section class="screen" id="screen-name" hidden>
+    <div class="hero">
+      <h1>Split or <span style="color:var(--steal)">Steal</span></h1>
+      <p>A pot of money appears, up to <b class="money">$5,000,000</b>. You have 40 seconds to convince each other. Then you both choose in secret: split… or steal.</p>
+    </div>
+    <form class="card" id="nameForm" style="max-width:440px;margin:20px auto 0">
+      <label for="nameInput" style="font-weight:800">Pick a name</label>
+      <input class="text" id="nameInput" maxlength="16" autocomplete="off" style="margin-top:8px" placeholder="e.g. Nico_93">
+      <p class="small" id="nameErr" style="color:var(--steal);min-height:20px;margin:8px 0"></p>
+      <button class="btn big" type="submit">Let's go</button>
+    </form>
+  </section>
+
+  <!-- Lobby -->
+  <section class="screen" id="screen-lobby" hidden>
+    <div class="hero" style="padding-top:10px">
+      <div id="meAvatar" style="font-size:52px;line-height:1"></div>
+      <h1 style="font-size:clamp(28px,6vw,42px);margin-top:6px">Hey <span id="meName"></span>!</h1>
+      <div style="margin-top:6px"><span class="title-tag" id="meTitle"></span></div>
+      <p id="meStats"></p>
+      <p style="margin-top:4px">Net worth: <b class="money" id="meFortune">$0</b></p>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <button class="btn big" id="btnPlay">Play online</button>
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" id="btnCreate" style="flex:1">Create a room</button>
+          <button class="btn ghost" id="btnShop" style="flex:1">Shop 🛒</button>
+        </div>
+        <form class="row" id="joinForm" style="margin-top:12px">
+          <input class="text" id="joinCode" maxlength="5" placeholder="Room code" style="flex:1;text-transform:uppercase;height:48px">
+          <button class="btn ghost" type="submit">Join</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>How it works</h3>
+        <ul class="rules small">
+          <li><b style="color:var(--split)">Both split</b>: each gets half the pot.</li>
+          <li><b style="color:var(--steal)">One steals</b>: they take it all, the other gets nothing.</li>
+          <li><b>Both steal</b>: nobody wins anything.</li>
+          <li>Your <b>split rate</b> is public. Use it to bluff…</li>
+        </ul>
+        <div class="odds" id="odds"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="row" style="align-items:center">
+        <h3 style="margin-right:auto">Your assets</h3>
+        <span class="mut small" id="assetCount"></span>
+      </div>
+      <div class="assets" id="assets"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="row" style="align-items:center">
+        <h3 style="margin-right:auto">Richest players</h3>
+        <button class="btn ghost" id="btnLb" style="min-height:40px;padding:8px 14px">Refresh</button>
+      </div>
+      <ol class="lb" id="lb"><li class="mut">Click “Refresh”.</li></ol>
+    </div>
+  </section>
+
+  <!-- Boutique -->
+  <section class="screen" id="screen-shop" hidden>
+    <div class="row" style="align-items:center;margin:8px 0 14px">
+      <h2 style="margin-right:auto;font-size:30px">Shop</h2>
+      <button class="btn ghost" id="btnShopBack">← Menu</button>
+    </div>
+    <div class="card">
+      <div class="tabs" role="tablist" id="shopTabs">
+        <button role="tab" data-k="cars">🚗 Cars</button>
+        <button role="tab" data-k="boats">🛥️ Boats</button>
+        <button role="tab" data-k="homes">🏖️ Homes</button>
+        <button role="tab" data-k="aircraft">✈️ Aircraft</button>
+        <button role="tab" data-k="avatar">Avatars</button>
+        <button role="tab" data-k="title">Titles</button>
+        <button role="tab" data-k="color">Name color</button>
+        <button role="tab" data-k="phrases">Phrases</button>
+      </div>
+      <p class="mut small" id="shopHint" style="margin:12px 0 0"></p>
+      <div class="shop" id="shopGrid"><p class="mut">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- Attente -->
+  <section class="screen" id="screen-wait" hidden>
+    <div class="card" style="max-width:480px;margin:40px auto;text-align:center">
+      <h2 id="waitTitle">Finding an opponent…</h2>
+      <div id="waitCode" class="code" hidden></div>
+      <p class="mut" id="waitText"></p>
+      <div class="spinner"></div>
+      <button class="btn ghost" id="btnCancel">Cancel</button>
+    </div>
+  </section>
+
+  <!-- Match -->
+  <section class="screen" id="screen-match" hidden>
+    <div class="card">
+      <div class="opp">
+        <div class="avatar" id="oppAvatar">🙂</div>
+        <div>
+          <div style="font-weight:800;font-size:18px"><span id="oppName"></span><span class="tag" id="oppAi" hidden>IA</span></div>
+          <div class="small"><span class="title-tag" id="oppTitle"></span></div>
+          <div class="oppline" id="oppLine"></div>
+        </div>
+        <div class="rate"><span class="mut small">Split rate</span><b id="oppRate">—</b></div>
+      </div>
+
+      <div class="pot" id="pot"><div class="tier" id="potTier"></div><div class="amount" id="potAmount">$0</div><div class="hint" id="potHint"></div></div>
+
+      <div id="talkZone">
+        <div class="row small" style="justify-content:space-between;margin-bottom:6px">
+          <span class="mut">Talk</span><span id="timerText" style="font-weight:800">40 s</span>
+        </div>
+        <div class="timer"><i id="timerBar"></i></div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="phrases" id="phrases"></div>
+        <div class="choices">
+          <button class="choice split" id="cSplit">Split</button>
+          <button class="choice steal" id="cSteal">Steal</button>
+        </div>
+        <p class="status" id="status"></p>
+        <p class="mut small" style="text-align:center;margin:0">You can change your mind until you have both chosen. No choice means split.</p>
+      </div>
+
+      <div id="resultZone" hidden>
+        <div class="reveal">
+          <div class="rcard pop" id="rMe"><div class="who">You</div><div class="what"></div></div>
+          <div class="rcard pop" id="rThem" style="animation-delay:.35s"><div class="who"></div><div class="what"></div></div>
+        </div>
+        <div class="outcome pop" id="outcome" style="animation-delay:.6s"></div>
+        <div class="gain" id="gain"></div>
+        <button class="btn ad" id="btnDouble" hidden></button>
+        <p class="status" id="rematchStatus"></p>
+        <div class="row" style="margin-top:12px">
+          <button class="btn" id="btnRematch" style="flex:1">Rematch</button>
+          <button class="btn ghost" id="btnNext" style="flex:1">New opponent</button>
+          <button class="btn ghost" id="btnLobby" style="flex:1">Menu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="adlayer" id="adLayer" hidden>
+  <div class="adbox">
+    <p class="mut small" style="margin:0">Ad (prototype simulation)</p>
+    <div class="count" id="adCount">5</div>
+    <p style="margin:0">Your winnings will be doubled when the ad ends.</p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="vendor/socket.io.min.js"></script>
+<script>
+{
+  /*
+   * Pubs et SDK CrazyGames.
+   * - Sur CrazyGames avec leur SDK chargé (Full Launch) : vraie pub récompensée.
+   * - En local avec ?devads=1 dans l'adresse : pub simulée de 5 s pour tester.
+   * - Partout ailleurs (Basic Launch, itch.io…) : pas de pub, le bouton « doubler » est masqué.
+   */
+  const DEV_ADS = new URLSearchParams(location.search).has('devads');
+  const cg = () => window.CrazyGames && window.CrazyGames.SDK;
+  let cgReady = false;
+  if (cg()) { Promise.resolve(cg().init && cg().init()).then(() => { cgReady = true; }).catch(() => {}); }
+  const SDK = {
+    adsAvailable() { return DEV_ADS || (cgReady && !!cg().ad); },
+    gameplayStart() { try { cgReady && cg().game.gameplayStart(); } catch (e) {} },
+    gameplayStop() { try { cgReady && cg().game.gameplayStop(); } catch (e) {} },
+    happytime() { try { cgReady && cg().game.happytime(); } catch (e) {} },
+    rewarded(onDone, onFail) {
+      if (cgReady && cg().ad) {
+        try { cg().ad.requestAd('rewarded', { adFinished: onDone, adError: onFail }); } catch (e) { onFail(); }
+        return;
+      }
+      if (!DEV_ADS) return onFail();
+      const layer = document.querySelector('#adLayer'), count = document.querySelector('#adCount');
+      let n = 5; count.textContent = n; layer.hidden = false;
+      const t = setInterval(() => {
+        n -= 1; count.textContent = n;
+        if (n <= 0) { clearInterval(t); layer.hidden = true; onDone(); }
+      }, 1000);
+    }
+  };
+
+  const $ = (s) => document.querySelector(s);
+  // Adresse du serveur : vide = même site (jeu servi par le serveur lui-même), sinon voir config.js.
+  const SERVER = (window.GAME_CONFIG && window.GAME_CONFIG.server) || undefined;
+  const socket = io(SERVER, { transports: ['websocket', 'polling'] });
+  const POT_HINT = { petit: '', gros: '', enorme: 'Big one…', jackpot: '⚠️ Jackpot: 2% chance', mega: '🚨 MEGA JACKPOT: 1% chance 🚨' };
+  const SHOP_HINT = {
+    cars: 'Your most expensive asset is shown to your opponents. Resell for 50% of the price.',
+    boats: 'Your most expensive asset is shown to your opponents. Resell for 50% of the price.',
+    homes: 'Your most expensive asset is shown to your opponents. Resell for 50% of the price.',
+    aircraft: 'Your most expensive asset is shown to your opponents. Resell for 50% of the price.',
+    avatar: 'Your avatar is shown to opponents and on the leaderboard.',
+    title: 'Your title is shown under your name during matches.',
+    color: 'The color of your name, shown everywhere.',
+    phrases: 'New lines to bluff with during the talk.'
+  };
+  let me = null, phrases = [], inMatch = false, opp = null, timerInt = null, roundEnd = 0, roundTotal = 0;
+  let shopData = null, shopTab = 'cars';
+
+  const fmt = (n) => new Intl.NumberFormat('en-US').format(n);
+  const games = (n) => n + (n === 1 ? ' game' : ' games');
+  const money = (n) => (n < 0 ? '-$' : '$') + fmt(Math.abs(n));
+  function show(id) { document.querySelectorAll('.screen').forEach((s) => { s.hidden = s.id !== id; }); window.scrollTo(0, 0); }
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toast.h); toast.h = setTimeout(() => { t.style.display = 'none'; }, 3200); }
+  function readStore() { try { return JSON.parse(localStorage.getItem('pov') || '{}'); } catch (e) { return {}; } }
+  function writeStore(o) { try { localStorage.setItem('pov', JSON.stringify(o)); } catch (e) {} }
+
+  function countUp(el, target, ms = 900) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = money(target); return; }
+    const t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / ms), v = Math.round(target * (1 - Math.pow(1 - k, 3)));
+      el.textContent = money(v);
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function setProfile(p) {
+    me = p;
+    $('#coins').textContent = money(p.coins);
+    $('#meName').textContent = p.name || '';
+    $('#meName').style.color = p.look.color;
+    $('#meAvatar').textContent = p.look.avatar;
+    $('#meTitle').textContent = p.look.title;
+    $('#meFortune').textContent = money(p.fortune);
+    $('#meStats').textContent = p.stats.games ? `${games(p.stats.games)} · split rate ${p.shareRate}%` : 'No games yet';
+    renderAssets();
+    const ownedKey = p.owned.join(',');
+    if (ownedKey !== setProfile.owned) { setProfile.owned = ownedKey; buildPhrases(); }
+    if (!$('#screen-shop').hidden) renderShop();
+  }
+
+  function renderAssets() {
+    const box = $('#assets'); box.innerHTML = '';
+    $('#assetCount').textContent = me.luxury.length + (me.luxury.length === 1 ? ' asset' : ' assets');
+    if (!me.luxury.length) {
+      const e = document.createElement('p'); e.className = 'mut small'; e.style.gridColumn = '1/-1';
+      e.textContent = 'Nothing yet. Win some money and hit the shop: cars, yachts, villas…';
+      box.append(e); return;
+    }
+    if (!shopData) { socket.emit('shop'); return; } // il faut le catalogue pour afficher les noms
+    const items = me.luxury.map((id) => shopData.luxury.find((l) => l.id === id)).filter(Boolean).sort((a, b) => b.price - a.price);
+    items.forEach((it) => {
+      const d = document.createElement('div'); d.className = 'asset';
+      const e = document.createElement('div'); e.className = 'emo'; e.textContent = it.emoji;
+      const n = document.createElement('div'); n.className = 'nm'; n.textContent = it.name;
+      const pr = document.createElement('div'); pr.className = 'pr'; pr.textContent = money(it.price);
+      const b = document.createElement('button'); b.textContent = 'Sell for ' + money(Math.floor(it.price * shopData.resellRate));
+      b.addEventListener('click', () => {
+        if (b.dataset.arm !== '1') { b.dataset.arm = '1'; b.textContent = 'Confirm?'; setTimeout(() => { if (b.isConnected) { b.dataset.arm = ''; b.textContent = 'Sell for ' + money(Math.floor(it.price * shopData.resellRate)); } }, 3000); return; }
+        b.disabled = true; socket.emit('resell', it.id);
+      });
+      d.append(e, n, pr, b); box.append(d);
+    });
+  }
+
+  function buildPhrases() {
+    const box = $('#phrases'); box.innerHTML = '';
+    phrases.forEach((ph, i) => {
+      if (ph.pack && !(me && me.owned.includes(ph.pack))) return;
+      const b = document.createElement('button'); b.textContent = ph.t;
+      if (ph.pack) b.style.borderColor = 'var(--gold)';
+      b.addEventListener('click', () => {
+        socket.emit('say', i);
+        box.querySelectorAll('button').forEach((x) => { x.disabled = true; });
+        setTimeout(() => box.querySelectorAll('button').forEach((x) => { x.disabled = false; }), 1300);
+      });
+      box.append(b);
+    });
+  }
+
+  function addBubble(mine, text) {
+    const chat = $('#chat');
+    const b = document.createElement('div'); b.className = 'bub' + (mine ? ' me' : ''); b.textContent = text;
+    chat.append(b); chat.scrollTop = chat.scrollHeight;
+  }
+
+  function setChoiceUI(c) {
+    $('#cSplit').classList.toggle('sel', c === 'split');
+    $('#cSteal').classList.toggle('sel', c === 'steal');
+    $('#cSplit').classList.toggle('dim', !!c);
+    $('#cSteal').classList.toggle('dim', !!c);
+  }
+
+  function startTimer(ms) {
+    clearInterval(timerInt);
+    roundTotal = ms; roundEnd = Date.now() + ms;
+    const tick = () => {
+      const left = Math.max(0, roundEnd - Date.now());
+      $('#timerBar').style.width = (left / roundTotal * 100) + '%';
+      $('#timerBar').classList.toggle('low', left < 10000);
+      $('#timerText').textContent = Math.ceil(left / 1000) + ' s';
+      if (!left) clearInterval(timerInt);
+    };
+    tick(); timerInt = setInterval(tick, 250);
+  }
+
+  function renderOpponent(o) {
+    opp = o;
+    $('#oppName').textContent = o.name;
+    $('#oppName').style.color = o.look ? o.look.color : '';
+    $('#oppAi').hidden = !o.ai;
+    $('#oppAvatar').textContent = o.look ? o.look.avatar : '🙂';
+    $('#oppTitle').textContent = o.look ? o.look.title : '';
+    $('#oppLine').textContent = money(o.fortune) + (o.showcase ? ' · ' + o.showcase.emoji + ' ' + o.showcase.name : '') + ' · ' + games(o.games);
+    $('#oppRate').textContent = o.shareRate === null ? 'new' : o.shareRate + '%';
+    $('#oppRate').style.color = o.shareRate === null ? '' : o.shareRate >= 60 ? 'var(--split)' : o.shareRate <= 40 ? 'var(--steal)' : 'var(--gold)';
+  }
+
+  function renderPot(pot) {
+    const el = $('#pot');
+    el.className = 'pot pop t-' + pot.tier;
+    $('#potTier').textContent = pot.label;
+    $('#potHint').textContent = POT_HINT[pot.tier] || '';
+    countUp($('#potAmount'), pot.amount, pot.tier === 'mega' ? 1800 : 900);
+  }
+
+  /* ---------- Réseau ---------- */
+  socket.on('connect', () => { const s = readStore(); socket.emit('hello', { id: s.id, token: s.token }); socket.emit('shop'); });
+  socket.on('welcome', (d) => {
+    writeStore({ id: d.id, token: d.token });
+    phrases = d.phrases;
+    const total = d.pots.reduce((s, p) => s + p.weight, 0);
+    const odds = $('#odds'); odds.innerHTML = '';
+    d.pots.forEach((p) => {
+      const c = document.createElement('div'); c.style.borderBottomColor = 'var(--' + p.key + ')';
+      const b = document.createElement('b'); b.textContent = Math.round(p.weight / total * 100) + '%';
+      c.append(b, document.createTextNode(p.label)); odds.append(c);
+    });
+    $('#online').textContent = '● ' + d.online + ' online';
+    setProfile(d.profile);
+    inMatch = false;
+    show(d.profile.name ? 'screen-lobby' : 'screen-name');
+  });
+  socket.on('disconnect', () => { clearInterval(timerInt); inMatch = false; toast('Connection lost… reconnecting.'); show('screen-connect'); });
+  socket.on('connect_error', () => { $('#connectText').textContent = 'Still trying to reach the game server… The first connection can take up to a minute.'; });
+  socket.on('kicked', () => toast('The game is open in another tab.'));
+  socket.on('online', (n) => { $('#online').textContent = '● ' + n + ' online'; });
+  socket.on('profile', (p) => { setProfile(p); if (!inMatch && p.name && !$('#screen-name').hidden) show('screen-lobby'); });
+  socket.on('nameError', (m) => { $('#nameErr').textContent = m; });
+
+  socket.on('searching', () => {
+    $('#waitTitle').textContent = 'Finding an opponent…';
+    $('#waitCode').hidden = true;
+    $('#waitText').textContent = 'If nobody is available, an AI player will take the seat.';
+    show('screen-wait');
+  });
+  socket.on('roomCreated', ({ code }) => {
+    $('#waitTitle').textContent = 'Room created';
+    $('#waitCode').hidden = false; $('#waitCode').textContent = code;
+    $('#waitText').textContent = 'Give this code to your friend so they can join.';
+    show('screen-wait');
+  });
+  socket.on('roomError', (m) => toast(m));
+
+  socket.on('round', (d) => {
+    inMatch = true;
+    renderOpponent(d.opponent);
+    renderPot(d.pot);
+    $('#chat').innerHTML = '';
+    $('#status').textContent = '';
+    $('#talkZone').hidden = false; $('#resultZone').hidden = true;
+    setChoiceUI(null);
+    startTimer(d.remainingMs);
+    show('screen-match');
+    SDK.gameplayStart();
+  });
+  socket.on('said', ({ mine, i }) => addBubble(mine, phrases[i] ? phrases[i].t : ''));
+  socket.on('chosen', (c) => setChoiceUI(c));
+  socket.on('opponentChose', () => { $('#status').textContent = '✅ ' + (opp ? opp.name : 'Your opponent') + ' has chosen'; });
+
+  socket.on('result', (d) => {
+    clearInterval(timerInt);
+    SDK.gameplayStop();
+    renderOpponent(d.opponent);
+    const label = { split: 'SPLIT', steal: 'STEAL' };
+    const rMe = $('#rMe'), rThem = $('#rThem');
+    rMe.className = 'rcard ' + d.myChoice; rMe.querySelector('.what').textContent = label[d.myChoice];
+    rThem.className = 'rcard ' + d.theirChoice; rThem.querySelector('.who').textContent = d.opponent.name;
+    rThem.querySelector('.what').textContent = label[d.theirChoice];
+    let msg;
+    if (d.outcome === 'both_split') msg = 'You both split! 🤝';
+    else if (d.outcome === 'both_steal') msg = 'You both stole… nobody wins.';
+    else if (d.myChoice === 'steal') msg = 'You stole it all! 😈';
+    else msg = 'Betrayed! ' + d.opponent.name + ' took everything.';
+    $('#outcome').textContent = msg;
+    const g = $('#gain');
+    g.classList.toggle('zero', !d.gain);
+    if (d.gain) countUp(g, d.gain); else g.textContent = '+$0';
+    const dbl = $('#btnDouble');
+    dbl.hidden = !(d.canDouble && SDK.adsAvailable()); dbl.disabled = false;
+    dbl.textContent = '📺 Watch an ad: double it (+' + money(d.gain) + ')';
+    $('#rematchStatus').textContent = '';
+    $('#btnRematch').disabled = false; $('#btnRematch').hidden = false;
+    $('#talkZone').hidden = true; $('#resultZone').hidden = false;
+    ['#rMe', '#rThem', '#outcome'].forEach((s) => { const e = $(s); e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); });
+    setProfile(d.profile);
+    if (d.gain >= 750000) SDK.happytime();
+  });
+  socket.on('doubled', (d) => {
+    setProfile(d.profile);
+    const g = $('#gain'); countUp(g, d.amount * 2, 700);
+    $('#btnDouble').hidden = true;
+    toast('Winnings doubled: +' + money(d.amount) + ' 🎉');
+  });
+  socket.on('opponentWantsRematch', () => { $('#rematchStatus').textContent = (opp ? opp.name : 'Your opponent') + ' wants a rematch!'; });
+  socket.on('opponentLeft', (d) => {
+    clearInterval(timerInt);
+    SDK.gameplayStop();
+    inMatch = false;
+    if (d.profile) setProfile(d.profile);
+    $('#talkZone').hidden = true; $('#resultZone').hidden = false;
+    $('#rMe').className = 'rcard'; $('#rMe').querySelector('.what').textContent = '';
+    $('#rThem').className = 'rcard'; $('#rThem').querySelector('.who').textContent = opp ? opp.name : '';
+    $('#rThem').querySelector('.what').textContent = 'LEFT';
+    $('#outcome').textContent = 'Your opponent left the game.';
+    const g = $('#gain'); g.classList.toggle('zero', !d.gift);
+    g.textContent = d.gift ? '+' + money(d.gift) + ' (your half of the pot)' : '';
+    $('#btnDouble').hidden = true;
+    $('#rematchStatus').textContent = '';
+    $('#btnRematch').hidden = true;
+  });
+  socket.on('leaderboard', (list) => {
+    const ol = $('#lb'); ol.innerHTML = '';
+    if (!list.length) { const li = document.createElement('li'); li.className = 'mut'; li.textContent = 'Nobody yet.'; ol.append(li); return; }
+    list.forEach((r, i) => {
+      const li = document.createElement('li');
+      const a = document.createElement('span'); a.textContent = (i + 1) + '.';
+      const b = document.createElement('span'); b.textContent = (r.look ? r.look.avatar + ' ' : '') + r.name + (r.showcase ? ' · ' + r.showcase.emoji : '');
+      if (r.look) b.style.color = r.look.color;
+      const c = document.createElement('span'); c.textContent = money(r.fortune);
+      li.append(a, b, c); ol.append(li);
+    });
+  });
+
+  /* ---------- Boutique ---------- */
+  const LUX_TABS = ['cars', 'boats', 'homes', 'aircraft'];
+  function offerEl({ big, swatch, label, sub, price, btnText, btnClass, disabled, onClick, equipped, progress }) {
+    const d = document.createElement('div'); d.className = 'offer' + (equipped ? ' equipped' : '');
+    if (swatch) { const s = document.createElement('div'); s.className = 'swatch'; s.style.background = swatch; d.append(s); }
+    if (big) { const e = document.createElement('div'); e.className = 'big-emo'; e.textContent = big; d.append(e); }
+    if (label) { const l = document.createElement('div'); l.className = 'lbl'; l.textContent = label; d.append(l); }
+    if (sub) { const s = document.createElement('div'); s.className = 'mut small'; s.textContent = sub; d.append(s); }
+    if (price !== null) { const p = document.createElement('div'); p.className = 'price'; p.textContent = price === 0 ? 'Free' : money(price); d.append(p); }
+    if (progress !== undefined) { const bar = document.createElement('div'); bar.className = 'bar'; const i = document.createElement('i'); i.style.width = Math.min(100, progress) + '%'; bar.append(i); d.append(bar); }
+    const b = document.createElement('button'); b.textContent = btnText; if (btnClass) b.className = btnClass; b.disabled = !!disabled;
+    if (onClick) b.addEventListener('click', () => { b.disabled = true; onClick(); });
+    d.append(b);
+    return d;
+  }
+  function renderShop() {
+    const grid = $('#shopGrid'); grid.innerHTML = '';
+    $('#shopHint').textContent = SHOP_HINT[shopTab];
+    document.querySelectorAll('#shopTabs button').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.k === shopTab)));
+    if (!shopData || !me) { grid.innerHTML = '<p class="mut">Loading…</p>'; return; }
+    if (LUX_TABS.includes(shopTab)) {
+      shopData.luxury.filter((l) => l.cat === shopTab).forEach((l) => {
+        const owned = me.luxury.includes(l.id);
+        grid.append(offerEl({
+          big: l.emoji, label: l.name, price: l.price,
+          progress: owned ? undefined : (me.coins / l.price) * 100,
+          btnText: owned ? 'Owned ✓' : me.coins >= l.price ? 'Buy' : 'Not enough',
+          btnClass: owned ? 'eq' : '', disabled: owned || me.coins < l.price, equipped: owned,
+          onClick: () => socket.emit('buy', { kind: 'luxury', id: l.id })
+        }));
+      });
+      return;
+    }
+    shopData.catalog[shopTab].forEach((e) => {
+      const owned = me.owned.includes(e.id);
+      const equipped = me.equipped[shopTab] === e.id;
+      const isPack = shopTab === 'phrases';
+      let btnText, btnClass = '', disabled = false, onClick;
+      if (owned && isPack) { btnText = 'Unlocked'; btnClass = 'own'; disabled = true; }
+      else if (equipped) { btnText = 'Equipped'; btnClass = 'eq'; disabled = true; }
+      else if (owned) { btnText = 'Equip'; btnClass = 'own'; onClick = () => socket.emit('equip', { kind: shopTab, id: e.id }); }
+      else { btnText = me.coins >= e.price ? 'Buy' : 'Not enough'; disabled = me.coins < e.price; onClick = () => socket.emit('buy', { kind: shopTab, id: e.id }); }
+      grid.append(offerEl({
+        big: shopTab === 'avatar' ? e.label : null,
+        swatch: shopTab === 'color' ? e.value : null,
+        label: shopTab === 'avatar' ? '' : e.label,
+        sub: isPack ? '“' + e.preview.slice(0, 2).join('” “') + '”…' : null,
+        price: owned ? null : e.price, btnText, btnClass, disabled, equipped, onClick
+      }));
+    });
+  }
+  socket.on('shop', (d) => { shopData = d; if (me) renderAssets(); renderShop(); });
+  socket.on('shopError', (m) => { toast(m); renderShop(); });
+  socket.on('bought', (d) => toast(d.kind === 'luxury' ? 'Congrats, it’s yours! 🔑' : 'Bought! 🛒'));
+
+  /* ---------- Actions ---------- */
+  $('#nameForm').addEventListener('submit', (e) => { e.preventDefault(); $('#nameErr').textContent = ''; socket.emit('setName', $('#nameInput').value); });
+  $('#btnPlay').addEventListener('click', () => socket.emit('findMatch'));
+  $('#btnCreate').addEventListener('click', () => socket.emit('createRoom'));
+  $('#joinForm').addEventListener('submit', (e) => { e.preventDefault(); const c = $('#joinCode').value.trim(); if (c.length === 5) socket.emit('joinRoom', c); else toast('The code has 5 characters.'); });
+  $('#btnCancel').addEventListener('click', () => { socket.emit('cancel'); show('screen-lobby'); });
+  $('#cSplit').addEventListener('click', () => socket.emit('choose', 'split'));
+  $('#cSteal').addEventListener('click', () => socket.emit('choose', 'steal'));
+  $('#btnDouble').addEventListener('click', () => {
+    $('#btnDouble').disabled = true;
+    SDK.rewarded(() => socket.emit('doubleGain'), () => { $('#btnDouble').disabled = false; toast('No ad available right now, try again later.'); });
+  });
+  $('#btnRematch').addEventListener('click', () => { $('#btnRematch').disabled = true; $('#rematchStatus').textContent = 'Waiting for ' + (opp ? opp.name : 'your opponent') + '…'; socket.emit('rematch'); });
+  $('#btnNext').addEventListener('click', () => { socket.emit('leaveMatch'); inMatch = false; socket.emit('findMatch'); });
+  $('#btnLobby').addEventListener('click', () => { socket.emit('leaveMatch'); inMatch = false; show('screen-lobby'); });
+  $('#btnLb').addEventListener('click', () => socket.emit('leaderboard'));
+  $('#btnShop').addEventListener('click', () => { show('screen-shop'); renderShop(); socket.emit('shop'); });
+  $('#btnShopBack').addEventListener('click', () => show('screen-lobby'));
+  document.querySelectorAll('#shopTabs button').forEach((t) => t.addEventListener('click', () => { shopTab = t.dataset.k; renderShop(); }));
+}
+</script>
+</body>
+</html>

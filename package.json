@@ -1,0 +1,22 @@
+{
+  "name": "split-or-steal",
+  "version": "0.1.0",
+  "description": "Split or Steal: Millions — multiplayer web game. Split or steal a pot of up to $5,000,000.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js",
+    "build:portal": "node build-portal.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.23.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.1"
+  }
+}

@@ -1,0 +1,12 @@
+# Déploiement Render (Blueprint) : New > Blueprint, puis choisis ce dépôt.
+services:
+  - type: web
+    name: split-or-steal
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false
